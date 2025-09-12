@@ -88,6 +88,7 @@ router.post("/SaveLookup", checkLookupforInsert, async (req, res) => {
     let _sort_order = req.sort_order;
     let _is_active = req.is_active;
     let _managed_by_ui = req.managed_by_ui;
+    let _other = req.body.other;
     //console.log("parent lookup id:", _parent_lookup_Id);
     if (_lookup_id == null || _lookup_id == "") {
         //Insert new lookup
@@ -102,6 +103,7 @@ router.post("/SaveLookup", checkLookupforInsert, async (req, res) => {
             sort_order: _sort_order,
             is_active: _is_active,
             managed_by_ui: _managed_by_ui,
+            other: _other,
         };
         //console.log("lookup Data", _lookupData);
         await _lookup.create(_lookupData).then((x) => {
@@ -130,6 +132,7 @@ router.post("/SaveLookup", checkLookupforInsert, async (req, res) => {
             sort_order: _sort_order,
             is_active: _is_active,
             managed_by_ui: _managed_by_ui,
+            other: _other,
         };
         __CreateAuditLog(
             "admin_lookup",
@@ -156,6 +159,7 @@ router.post("/SaveLookup", checkLookupforInsert, async (req, res) => {
         //     },
         //   }
         // );
+        console.log(mongoose.Types.ObjectId(_parent_lookup_Id));
         const _updateLookup = await TlbLookup.findByIdAndUpdate(
             _lookup_id,
             {
@@ -163,12 +167,13 @@ router.post("/SaveLookup", checkLookupforInsert, async (req, res) => {
                     client_id: mongoose.Types.ObjectId(_client_id),
                     lookup_type: _lookup_type,
                     lookup_value: _lookup_value,
-                    parent_lookup_Id:
+                    parent_lookup_id:
                         mongoose.Types.ObjectId(_parent_lookup_Id),
                     parent_lookup_type: _parent_lookup_type,
                     sort_order: _sort_order,
                     is_active: _is_active,
                     managed_by_ui: _managed_by_ui,
+                    other: _other,
                 },
             },
             { new: true } // Returns the updated document
