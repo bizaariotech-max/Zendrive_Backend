@@ -43,14 +43,27 @@ router.post("/AddEditHpQuestion", async (req, res) => {
 
         return res.json(__requestResponse("200", __SUCCESS));
     } catch (error) {
-        console.log(error.message);
-        return res.json(__requestResponse("500", __SOME_ERROR));
+        console.log(error);
+        return res.json(__requestResponse("500", error.message));
     }
 });
 router.post("/GetHpQuestion", async (req, res) => {
     try {
         const list = await HPQuestionMaster.find();
         return res.json(__requestResponse("200", __SUCCESS, list));
+    } catch (error) {
+        console.log(error.message);
+        return res.json(__requestResponse("500", __SOME_ERROR));
+    }
+});
+router.post("/DeleteHpQuestion", async (req, res) => {
+    try {
+        const { HPQuestionId } = req.body;
+        const question = await HPQuestionMaster.findByIdAndDelete(HPQuestionId);
+        if (question) {
+            return res.json(__requestResponse("200", __SUCCESS));
+        }
+        return res.json(__requestResponse("404", "Question Not found"));
     } catch (error) {
         console.log(error.message);
         return res.json(__requestResponse("500", __SOME_ERROR));
