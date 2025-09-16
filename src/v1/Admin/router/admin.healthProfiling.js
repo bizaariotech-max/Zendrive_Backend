@@ -63,7 +63,7 @@ router.post("/DeleteHpQuestion", async (req, res) => {
         if (question) {
             return res.json(__requestResponse("200", __SUCCESS));
         }
-        return res.json(__requestResponse("404", "Question Not found"));
+        return res.json(__requestResponse("404", "Question Not found."));
     } catch (error) {
         console.log(error.message);
         return res.json(__requestResponse("500", __SOME_ERROR));
