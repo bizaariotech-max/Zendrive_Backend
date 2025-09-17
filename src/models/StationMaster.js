@@ -26,6 +26,10 @@ const vehicleEventSchema = new mongoose.Schema(
             type: { type: String, enum: ["Point"], default: "Point" },
             coordinates: { type: [Number], required: true }, // [longitude, latitude]
         },
+        IsActive: {
+            type: Boolean,
+            default: true,
+        },
     },
     {
         timestamps: true,
