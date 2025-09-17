@@ -15,6 +15,7 @@ router.post("/AddEditRoute", async (req, res) => {
             StartingStationId: req.body?.StartingStationId,
             TerminalStationId: req.body?.TerminalStationId,
             EnrouteStation: req.body?.EnrouteStation,
+            DistanceInKMs: req.body?.DistanceInKMs,
             Schedules: req.body?.Schedules,
             DurationInHrsMins: req.body?.DurationInHrsMins,
             IsActive: req.body?.IsActive,

@@ -20,6 +20,7 @@ const vehicleEventSchema = new mongoose.Schema(
                 ref: "station_master",
             },
         ],
+        DistanceInKMs: String,
         Schedules: [
             {
                 Weekday: String,
