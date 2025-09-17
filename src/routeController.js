@@ -7,6 +7,7 @@ const V1 = {
         require("./v1/Admin/router/admin.lookup"),
         require("./v1/Admin/router/admin.healthProfiling"),
         require("./v1/Admin/router/admin.stationMaster"),
+        require("./v1/Admin/router/admin.routes"),
     ],
     COMMON_ROUTE: [
         require("./v1/Common/router/lookup"),

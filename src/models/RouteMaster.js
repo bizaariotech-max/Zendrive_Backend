@@ -28,6 +28,10 @@ const vehicleEventSchema = new mongoose.Schema(
             },
         ],
         DurationInHrsMins: String,
+        IsActive: {
+            type: Boolean,
+            default: true,
+        },
     },
     {
         timestamps: true,
