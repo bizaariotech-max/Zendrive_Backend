@@ -18,7 +18,7 @@ const _SchemaDesign = new mongoose.Schema(
         Individual: {
             ReportingTo: {
                 type: mongoose.SchemaTypes.ObjectId,
-                ref: "asset_masters", // Self-reference (Asset ID)
+                ref: "asset_master", // Self-reference (Asset ID)
             },
             FirstName: String,
             LastName: String,
@@ -38,7 +38,7 @@ const _SchemaDesign = new mongoose.Schema(
                 ref: "admin_lookups",
             },
             BloodGroup: String,
-            PhoneNumber: { type: String, required: true },
+            PhoneNumber: { type: String },
             EmailAddress: { type: String },
             EmergencyContact1: String,
             EmergencyContact2: String,

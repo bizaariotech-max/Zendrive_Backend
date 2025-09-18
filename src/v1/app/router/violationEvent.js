@@ -10,6 +10,7 @@ const {
 const { default: axios } = require("axios");
 const ViolationEvent = require("../../../models/ViolationEvent");
 const { __SUCCESS } = require("../../../utils/variable");
+const IncidentMaster = require("../../../models/IncidentMaster");
 
 router.post("/addViolationEvent", async (req, res) => {
     const {
@@ -37,6 +38,15 @@ router.post("/addViolationEvent", async (req, res) => {
 
         const violationEvent = await ViolationEvent.create(data);
 
+        await IncidentMaster.create({
+            IncidentLocation: address,
+            IncidentGeoLocation: {
+                type: "Point",
+                coordinates: [latitude, longitude],
+            },
+            VideoEvidenceURL: videoUrl,
+            DateTimeOfIncident: dateTimeStamp,
+        });
         if (violationEvent) {
             return res.json(
                 __requestResponse(

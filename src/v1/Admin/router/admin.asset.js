@@ -5,6 +5,7 @@ const { __requestResponse } = require("../../../utils/constent");
 const { __SUCCESS, __SOME_ERROR } = require("../../../utils/variable");
 const StationMaster = require("../../../models/StationMaster");
 const AssetMaster = require("../../../models/AssetMaster");
+const { GetLookup } = require("../../app/constant");
 
 // Add / Edit Asset
 router.post("/AddEditAsset", async (req, res) => {
@@ -40,7 +41,24 @@ router.post("/AddEditAsset", async (req, res) => {
 // Get Asset List
 router.post("/GetAssets", async (req, res) => {
     try {
-        const list = await AssetMaster.find()
+        const assetType = req.body.assetType;
+
+        // Individual ,Vehicle
+        const AssetTypeIds = await GetLookup(
+            "asset_type",
+            assetType == "Individual"
+                ? "68cb9812d425cf3422d58d1c"
+                : "68cb9812d425cf3422d58d1d"
+        );
+        const list = await AssetMaster.find(
+            assetType
+                ? {
+                      AssetTypeId: {
+                          $in: AssetTypeIds.map((item) => item?._id),
+                      },
+                  }
+                : {}
+        )
             .populate([
                 { path: "AssetTypeId", select: "lookup_value" },
                 { path: "StationId", select: "StationName" },
