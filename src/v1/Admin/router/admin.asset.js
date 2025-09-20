@@ -5,7 +5,7 @@ const { __requestResponse } = require("../../../utils/constent");
 const { __SUCCESS, __SOME_ERROR } = require("../../../utils/variable");
 const StationMaster = require("../../../models/StationMaster");
 const AssetMaster = require("../../../models/AssetMaster");
-const { GetLookup } = require("../../app/constant");
+const { GetLookup, GetENV } = require("../../app/constant");
 
 // Add / Edit Asset
 router.post("/AddEditAsset", async (req, res) => {
@@ -88,6 +88,42 @@ router.post("/DeleteAsset", async (req, res) => {
             return res.json(__requestResponse("200", __SUCCESS));
         }
         return res.json(__requestResponse("404", "Asset not found."));
+    } catch (error) {
+        console.error(error.message);
+        return res.json(__requestResponse("500", __SOME_ERROR));
+    }
+});
+
+router.post("/GetAssetsDropDown", async (req, res) => {
+    try {
+        // {
+        //     "assetType":"Vehicle",
+        //     "stationId":"68cb9812d425cf3422d58d1d",
+        // }
+        const assetType = req.body.AssetType;
+        const stationId = req.body.StationId;
+
+        if (!assetType) {
+        }
+
+        const AssetTypeIds = await GetENV(assetType);
+        console.log(AssetTypeIds);
+
+        const filter = {};
+        if (assetType) {
+            filter.AssetTypeId = AssetTypeIds?.EnvSettingValue;
+        }
+        if (stationId) {
+            filter.StationId = stationId;
+        }
+        console.log(filter);
+
+        const list = await AssetMaster.find(
+            filter,
+            "Individual.FirstName Individual.LastName Vehicle.RegistrationNumber"
+        );
+
+        return res.json(__requestResponse("200", __SUCCESS, list));
     } catch (error) {
         console.error(error.message);
         return res.json(__requestResponse("500", __SOME_ERROR));
