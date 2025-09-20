@@ -10,15 +10,15 @@ const vehicleEventSchema = new mongoose.Schema(
         StartTimeOfTrip: String,
         VehicleId: {
             type: mongoose.SchemaTypes.ObjectId,
-            // ref: "station_master",
+            ref: "asset_master",
         },
         DriverId: {
             type: mongoose.SchemaTypes.ObjectId,
-            // ref: "station_master",
+            ref: "asset_master",
         },
         ConductorId: {
             type: mongoose.SchemaTypes.ObjectId,
-            // ref: "station_master",
+            ref: "asset_master",
         },
     },
     {

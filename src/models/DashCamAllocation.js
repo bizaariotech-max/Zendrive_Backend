@@ -8,7 +8,7 @@ const vehicleEventSchema = new mongoose.Schema(
         },
         VehicleId: {
             type: mongoose.SchemaTypes.ObjectId,
-            // ref: "station_master",
+            ref: "asset_master",
         },
         SimCardNumber: String,
     },
@@ -16,4 +16,4 @@ const vehicleEventSchema = new mongoose.Schema(
         timestamps: true,
     }
 );
-module.exports = mongoose.model("route_master", vehicleEventSchema);
+module.exports = mongoose.model("dash_cam_allocation", vehicleEventSchema);
