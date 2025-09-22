@@ -11,6 +11,7 @@ router.post("/AddEditRoute", async (req, res) => {
         const { RouteId } = req.body;
 
         const newData = {
+            RouteNumber: req.body?.RouteNumber,
             StationId: req.body?.StationId,
             StartingStationId: req.body?.StartingStationId,
             TerminalStationId: req.body?.TerminalStationId,

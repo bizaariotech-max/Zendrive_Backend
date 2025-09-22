@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const vehicleEventSchema = new mongoose.Schema(
     {
+        RouteNumber: String,
         StationId: {
             type: mongoose.SchemaTypes.ObjectId,
             ref: "station_master",
