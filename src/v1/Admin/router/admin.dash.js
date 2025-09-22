@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const { __requestResponse } = require("../../../utils/constent");
 const { __SUCCESS, __SOME_ERROR } = require("../../../utils/variable");
-const DutyAllocation = require("../../../models/DutyAllocation");
 const DashCamAllocation = require("../../../models/DashCamAllocation");
 
 router.post("/AddEditDashCam", async (req, res) => {

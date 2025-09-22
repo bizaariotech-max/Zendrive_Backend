@@ -4,7 +4,7 @@ const vehicleEventSchema = new mongoose.Schema(
     {
         StationId: {
             type: mongoose.SchemaTypes.ObjectId,
-            ref: "route_master",
+            ref: "station_master",
         },
         VehicleId: {
             type: mongoose.SchemaTypes.ObjectId,
