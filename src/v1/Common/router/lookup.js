@@ -4,7 +4,7 @@ const router = express.Router();
 const { default: mongoose } = require("mongoose");
 
 // constants & constant functions
-const { __requestResponse } = require("../../../utils/constent");
+const { __requestResponse, __deepClone } = require("../../../utils/constent");
 const { __SUCCESS } = require("../../../utils/variable");
 
 // models
@@ -47,16 +47,39 @@ router.post("/LookupList", async (req, res) => {
             }),
             is_active: true,
         })
-            .populate("parent_lookup_id", "lookup_value")
+            .populate({
+                path: "parent_lookup_id",
+                select: "lookup_value parent_lookup_id",
+                populate: { path: "parent_lookup_id", select: "lookup_value" },
+            })
             .lean();
 
         if (list.length === 0) {
             return res.json(__requestResponse("404", "No Data found"));
         }
-        const transformedList = list.map((item) => ({
+        console.log(list[0]);
+        const transformedList = __deepClone(list).map((item) => ({
             ...item,
             parent_lookup_name: item?.parent_lookup_id?.lookup_value || "",
             parent_lookup_id: item?.parent_lookup_id?._id || "",
+            ...(item?.other
+                ? {
+                      other: {
+                          ...item?.other,
+
+                          ...(item?.other?.investigation_typeId ==
+                          item?.parent_lookup_id?.parent_lookup_id?._id
+                              ? {
+                                    investigation_typeId:
+                                        item?.other?.investigation_typeId,
+                                    investigation_type_name:
+                                        item?.parent_lookup_id?.parent_lookup_id
+                                            ?.lookup_value,
+                                }
+                              : null),
+                      },
+                  }
+                : null),
         }));
 
         return res.json(__requestResponse("200", __SUCCESS, transformedList));
