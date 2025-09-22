@@ -118,7 +118,7 @@ router.post("/fetchViolationEvents", async (req, res) => {
             `https://pullapi-s1.track360.co.in/api/v1/auth/pull_api?username=${_assetID?.FleetDriver?.RoadCastCredential?.username}&password=${_assetID?.FleetDriver?.RoadCastCredential?.password}`
         );
         // console.log("first");
-        return res.json(__requestResponse("200", __SUCCESS, response.data));
+        // return res.json(__requestResponse("200", __SUCCESS, response.data));
 
         if (response.status === 200) {
             const newArray = response?.data?.data?.filter((item) => {
