@@ -12,6 +12,7 @@ const V1 = {
         require("./v1/Admin/router/admin.login"),
         require("./v1/Admin/router/admin.dash"),
         require("./v1/Admin/router/admin.duty"),
+        require("./v1/Admin/router/admin.incident"),
     ],
     COMMON_ROUTE: [
         require("./v1/Common/router/lookup"),
