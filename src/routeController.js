@@ -17,6 +17,7 @@ const V1 = {
     COMMON_ROUTE: [
         require("./v1/Common/router/lookup"),
         require("./v1/Common/router/imageUpload"),
+        require("./v1/Common/router/auth"),
     ],
 };
 module.exports = { V1 };
