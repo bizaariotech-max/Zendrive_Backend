@@ -3,7 +3,6 @@ const { default: mongoose } = require("mongoose");
 const router = express.Router();
 const { __requestResponse } = require("../../../utils/constent");
 const { __SUCCESS, __SOME_ERROR } = require("../../../utils/variable");
-const StationMaster = require("../../../models/StationMaster");
 const RouteMaster = require("../../../models/RouteMaster");
 
 router.post("/AddEditRoute", async (req, res) => {

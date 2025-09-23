@@ -5,7 +5,7 @@ const _SchemaDesign = new Schema(
     {
         IncidentTypeId: {
             type: mongoose.SchemaTypes.ObjectId,
-            // ref:""
+            ref: "admin_lookups",
         },
         IncidentLocation: String,
         IncidentGeoLocation: {
@@ -14,34 +14,34 @@ const _SchemaDesign = new Schema(
         },
         StationId: {
             type: mongoose.SchemaTypes.ObjectId,
-            // ref:""
+            ref: "station_master",
         },
         RouteId: {
             type: mongoose.SchemaTypes.ObjectId,
-            // ref:""
+            ref: "route_master",
         },
         VehicleId: {
             type: mongoose.SchemaTypes.ObjectId,
-            // ref:""
+            ref: "asset_master",
         },
         DriverId: {
             type: mongoose.SchemaTypes.ObjectId,
-            // ref:""
+            ref: "asset_master",
         },
         ConductorId: {
             type: mongoose.SchemaTypes.ObjectId,
-            // ref:""
+            ref: "asset_master",
         },
         DateTimeOfIncident: String,
         IncidentSeriousnessGrade: String,
         ViolationTypeId: {
             type: mongoose.SchemaTypes.ObjectId,
-            // ref:""
+            ref: "admin_lookups",
         },
         VideoEvidenceURL: String,
         CauseofAccident: {
             type: mongoose.SchemaTypes.ObjectId,
-            // ref:""
+            ref: "admin_lookups",
         },
         Responsibility: String,
         VehicleDamageReport: String,

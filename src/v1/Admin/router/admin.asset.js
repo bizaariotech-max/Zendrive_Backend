@@ -120,7 +120,7 @@ router.post("/GetAssetsDropDown", async (req, res) => {
 
         const list = await AssetMaster.find(
             filter,
-            "Individual.FirstName Individual.LastName Vehicle.RegistrationNumber"
+            "Individual.FirstName Individual.LastName Individual.DLNumber Vehicle.RegistrationNumber"
         );
 
         return res.json(__requestResponse("200", __SUCCESS, list));

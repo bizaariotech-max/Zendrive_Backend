@@ -37,7 +37,7 @@ router.post("/GetDutyAllocation", async (req, res) => {
         const list = await DutyAllocation.find().populate([
             {
                 path: "VehicleId DriverId ConductorId",
-                select: "Individual.FirstName Individual.LastName Vehicle.RegistrationNumber",
+                select: "Individual.FirstName Individual.LastName Individual.DLNumber Vehicle.RegistrationNumber",
             },
             {
                 path: "RouteId",
