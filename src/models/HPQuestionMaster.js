@@ -9,19 +9,19 @@ const _SchemaDesign = new Schema(
         },
         HPGroup: {
             type: mongoose.SchemaTypes.ObjectId,
-            // ref:""
+            ref: "admin_lookups",
             // (drop-down Health Profiling Group Master)
         },
         QuestionOrder: Number,
         LogicalGroup: String,
         InvestigationType: {
             type: mongoose.SchemaTypes.ObjectId,
-            // ref:""
+            ref: "admin_lookups",
             //  (Investigation Type Master)
         },
         QuestionType: {
             type: mongoose.SchemaTypes.ObjectId,
-            // ref:""
+            ref: "admin_lookups",
             // (drop-down Question Type Master)
         },
         HPQuestion: String,
@@ -32,7 +32,7 @@ const _SchemaDesign = new Schema(
         },
         InputType: {
             type: mongoose.SchemaTypes.ObjectId,
-            // ref:""
+            ref: "admin_lookups",
             // (drop-down Input Type Master)
         },
         ValidityMinValue: String,

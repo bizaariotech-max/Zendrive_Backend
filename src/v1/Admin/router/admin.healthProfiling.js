@@ -49,7 +49,10 @@ router.post("/AddEditHpQuestion", async (req, res) => {
 });
 router.post("/GetHpQuestion", async (req, res) => {
     try {
-        const list = await HPQuestionMaster.find();
+        const list = await HPQuestionMaster.find().populate({
+            path: "HPGroup InvestigationType QuestionType InputType",
+            select: "lookup_value",
+        });
         return res.json(__requestResponse("200", __SUCCESS, list));
     } catch (error) {
         console.log(error.message);
