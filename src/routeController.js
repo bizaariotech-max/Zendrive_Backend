@@ -2,6 +2,7 @@ const V1 = {
     APP_ROUTE: [
         require("./v1/app/router/auth"),
         require("./v1/app/router/violationEvent"),
+        require("./v1/app/router/healthProfiling"),
     ],
     ADMIN_ROUTE: [
         require("./v1/Admin/router/admin.lookup"),

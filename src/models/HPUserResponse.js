@@ -8,30 +8,30 @@ const _SchemaDesign = new Schema(
             // ref:""
             // (Health Auditor)
         },
-        AssetId: {
-            type: mongoose.SchemaTypes.ObjectId,
-            // ref:""
-            //  (Responder/ Driver)
-        },
+        // AssetId: {
+        //     type: mongoose.SchemaTypes.ObjectId,
+        //     // ref:""
+        //     //  (Responder/ Driver)
+        // },
 
         HPQuestion: {
             type: mongoose.SchemaTypes.ObjectId,
             ref: "hp_question_master",
         },
-        UserResponse: String,
+        UserResponse: [String],
         InvestigationResult: String,
         UploadResult: String,
         UploadInterpretation: String,
         AbnormalitiesFound: [
             {
                 type: mongoose.SchemaTypes.ObjectId,
-                // ref:""
+                // ref:"admin_lookups"
                 //   (Abnormality Master)
             },
         ],
 
         MeasurementValue: String,
-        DateAndTime: String,
+        DateAndTime: Date,
         GeoLocation: {
             type: { type: String, enum: ["Point"], default: "Point" },
             coordinates: { type: [Number] }, // [lng, lat]
