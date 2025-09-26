@@ -3,6 +3,11 @@ const { Schema } = mongoose;
 
 const _SchemaDesign = new Schema(
     {
+        AssetType: {
+            type: mongoose.SchemaTypes.ObjectId,
+            ref: "admin_lookups",
+            // (drop-down Health Profiling Group Master)
+        },
         HPQuestionCategory: {
             type: String,
             enum: ["Survey", "Investigation"],

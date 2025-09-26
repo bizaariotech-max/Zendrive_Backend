@@ -10,6 +10,7 @@ router.post("/AddEditHpQuestion", async (req, res) => {
         const { HPQuestionId } = req.body;
 
         const newData = {
+            AssetType: req.body?.AssetType,
             HPQuestionCategory: req.body?.HPQuestionCategory,
             HPGroup: req.body?.HPGroup,
             QuestionOrder: req.body?.QuestionOrder,
@@ -50,7 +51,7 @@ router.post("/AddEditHpQuestion", async (req, res) => {
 router.post("/GetHpQuestion", async (req, res) => {
     try {
         const list = await HPQuestionMaster.find().populate({
-            path: "HPGroup InvestigationType QuestionType InputType LogicalGroup",
+            path: "AssetType HPGroup InvestigationType QuestionType InputType LogicalGroup",
             select: "lookup_value",
         });
         return res.json(__requestResponse("200", __SUCCESS, list));
