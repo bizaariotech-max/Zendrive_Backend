@@ -13,7 +13,10 @@ const _SchemaDesign = new Schema(
             // (drop-down Health Profiling Group Master)
         },
         QuestionOrder: Number,
-        LogicalGroup: String,
+        LogicalGroup: {
+            type: mongoose.SchemaTypes.ObjectId,
+            ref: "admin_lookups",
+        },
         InvestigationType: {
             type: mongoose.SchemaTypes.ObjectId,
             ref: "admin_lookups",

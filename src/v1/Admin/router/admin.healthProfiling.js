@@ -50,7 +50,7 @@ router.post("/AddEditHpQuestion", async (req, res) => {
 router.post("/GetHpQuestion", async (req, res) => {
     try {
         const list = await HPQuestionMaster.find().populate({
-            path: "HPGroup InvestigationType QuestionType InputType",
+            path: "HPGroup InvestigationType QuestionType InputType LogicalGroup",
             select: "lookup_value",
         });
         return res.json(__requestResponse("200", __SUCCESS, list));
