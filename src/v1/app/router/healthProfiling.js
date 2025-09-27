@@ -16,9 +16,12 @@ router.post("/GetHpQuestion", async (req, res) => {
             );
         }
 
-        const AssetTypeIds = await GetENV(assetType)?.EnvSettingValue;
+        // const AssetTypeIds = await GetENV(assetType)?.EnvSettingValue;
+        const AssetTypeIds = await GetENV(assetType);
+        console.log(AssetTypeIds);
+
         const list = await HPQuestionMaster.find({
-            AssetType: AssetTypeIds,
+            AssetType: AssetTypeIds?.EnvSettingValue,
         }).populate({
             path: "AssetType HPGroup InvestigationType QuestionType InputType LogicalGroup",
             select: "lookup_value",
