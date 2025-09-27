@@ -34,8 +34,35 @@ const GetLookup = async (lookup_type, parent_lookup_id) => {
     }));
     return transformedList;
 };
+function GroupQuestionsByLogicalGroup(data) {
+    return data.reduce((acc, item) => {
+        const group = item.LogicalGroup.lookup_value;
+        if (!acc[group]) {
+            acc[group] = [];
+        }
+        acc[group].push({
+            QuestionId: item._id,
+            HPQuestion: item.HPQuestion,
+            LogicalGroupId: item.LogicalGroup?._id,
+        });
+        return acc;
+    }, {});
+}
+function GroupAnswersByCreatedAt(data) {
+    return data.reduce((acc, item) => {
+        // Extract just the date part (YYYY-MM-DD)
+        const dateKey = new Date(item.createdAt).toISOString().split("T")[0];
 
+        if (!acc[dateKey]) {
+            acc[dateKey] = [];
+        }
+        acc[dateKey].push(item);
+        return acc;
+    }, {});
+}
 module.exports = {
     GetENV,
     GetLookup,
+    GroupQuestionsByLogicalGroup,
+    GroupAnswersByCreatedAt,
 };
