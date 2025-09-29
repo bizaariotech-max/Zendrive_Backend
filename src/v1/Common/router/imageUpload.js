@@ -66,7 +66,7 @@ router.post("/AddImage", __uploadImage, async (req, res) => {
 
         return res.json(__requestResponse("200", __SUCCESS, uploadedFiles));
     } catch (error) {
-        console.error("Upload Error:", error.message);
+        console.error("Upload Error:", error);
         return res.json(__requestResponse("500", __SOME_ERROR));
     }
 });

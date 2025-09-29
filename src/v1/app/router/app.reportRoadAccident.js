@@ -7,21 +7,31 @@ const RoadAccident = require("../../../models/ReportRoadAccident");
 // 📌 Create Road Accident Report
 router.post("/AddRoadAccident", async (req, res) => {
     try {
+        console.log(req.body);
+
         const newData = {
             Geolocation: {
                 type: "Point",
-                coordinates: [req.body?.Longitude, req.body?.Latitude], // Expect [lng, lat]
+                coordinates: [req.body?.latitude, req.body?.longitude], // Expect [lng, lat]
             },
-            AccidentTypeId: req.body?.AccidentTypeId,
-            VehicleTypesInvolvedId: req.body?.VehicleTypesInvolvedId,
-            ApproximateNoOfVictims: req.body?.ApproximateNoOfVictims,
-            VisibleInjuryTypes: req.body?.VisibleInjuryTypes,
-            FatalityNo: req.body?.FatalityNo,
-            VehicleInvolved: req.body?.VehicleInvolved,
-            VictimNumber: req.body?.VictimNumber,
-            VictimDetails: req.body?.VictimDetails,
-            AccidentSitesPicture: req.body?.AccidentSitesPicture,
-            AccidentVictimsPicture: req.body?.AccidentVictimsPicture,
+            AccidentTypeIds: req.body?.accidentType,
+            VehicleTypesInvolvedIds: req.body?.vehicleType,
+            ApproximateNoOfVictims: req.body?.noOfVictims,
+            VisibleInjuryTypes: req.body?.injuryType,
+            FatalityNo: req.body?.anyFatality,
+            VehicleInvolved: req.body?.vehicleList.map((item) => ({
+                VehicleType: item?.TypeId,
+                RegistrationNumber: item?.RegisrationNumber,
+                PicturePfNumberPlate: item?.PictureOfNumberPlate,
+            })),
+            VictimNumber: req.body?.contactOfConsiousVictim,
+            VictimDetails: req.body?.victimlist.map((item) => ({
+                IdCardType: item?.TypeId,
+                IdNumber: item?.IdNumber,
+                IdPicture: item?.PictureOfId,
+            })),
+            AccidentSitesPicture: req.body?.accidentSites,
+            AccidentVictimsPicture: req.body?.accidentVictims,
         };
 
         await RoadAccident.create(newData);

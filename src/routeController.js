@@ -4,6 +4,7 @@ const V1 = {
         require("./v1/app/router/violationEvent"),
         require("./v1/app/router/healthProfiling"),
         require("./v1/app/router/app.reportRoadAccident"),
+        require("./v1/app/router/app.SOS"),
     ],
     ADMIN_ROUTE: [
         require("./v1/Admin/router/admin.lookup"),

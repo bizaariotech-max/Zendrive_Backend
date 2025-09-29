@@ -6,19 +6,25 @@ const vehicleEventSchema = new mongoose.Schema(
             type: { type: String, enum: ["Point"], default: "Point" },
             coordinates: { type: [Number], required: true }, // [longitude, latitude]
         },
-        AccidentTypeId: {
-            type: mongoose.SchemaTypes.ObjectId,
-            ref: "admin_lookups",
-        },
-        VehicleTypesInvolvedId: {
-            type: mongoose.SchemaTypes.ObjectId,
-            ref: "admin_lookups",
-        },
+        AccidentTypeIds: [
+            {
+                type: mongoose.SchemaTypes.ObjectId,
+                ref: "admin_lookups",
+            },
+        ],
+        VehicleTypesInvolvedIds: [
+            {
+                type: mongoose.SchemaTypes.ObjectId,
+                ref: "admin_lookups",
+            },
+        ],
         ApproximateNoOfVictims: String,
-        VisibleInjuryTypes: {
-            type: mongoose.SchemaTypes.ObjectId,
-            ref: "admin_lookups",
-        },
+        VisibleInjuryTypes: [
+            {
+                type: mongoose.SchemaTypes.ObjectId,
+                ref: "admin_lookups",
+            },
+        ],
         FatalityNo: String,
 
         VehicleInvolved: [
