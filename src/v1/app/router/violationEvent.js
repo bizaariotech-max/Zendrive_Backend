@@ -78,7 +78,7 @@ router.post("/addViolationEvent", async (req, res) => {
 router.post("/fetchViolationEvents", async (req, res) => {
     try {
         // const token = req.headers["auth-token"]?.split(" ")[1];
-        const { filter, page = 1 } = req.body;
+        const { filter, page = 1, limit = 20 } = req.body;
         console.log("body", req.body);
 
         const defaultFilter = {
@@ -202,11 +202,14 @@ router.post("/fetchViolationEvents", async (req, res) => {
                     imeiNumber,
                     ...matchFilter,
                 })
-                    .skip((page - 1) * 20) // Pagination logic: Skip records based on page number, with a fixed page size of 20
-                    .limit(20); // Always limit to 20 records per page
+                    .skip((page - 1) * limit) // Pagination logic: Skip records based on page number, with a fixed page size of 20
+                    .limit(limit); // Always limit to 20 records per page
 
                 const totalPages = Math.ceil(totalCount / 20); // Calculate total pages based on the fixed page size of 20
-
+                const totalDocuments = await ViolationEvent.countDocuments({
+                    imeiNumber,
+                    ...matchFilter,
+                });
                 if (eventData.length > 0) {
                     return res.send(
                         __requestResponse(
@@ -217,6 +220,7 @@ router.post("/fetchViolationEvents", async (req, res) => {
                                 totalPages, // Return the total number of pages
                                 currentPage: page, // Return the current page number
                                 data: eventData,
+                                totalDocuments: totalDocuments,
                             }
                         )
                     );
@@ -230,6 +234,7 @@ router.post("/fetchViolationEvents", async (req, res) => {
                                 totalPages,
                                 currentPage: page,
                                 data: [],
+                                totalDocuments: totalDocuments,
                             }
                         )
                     );
