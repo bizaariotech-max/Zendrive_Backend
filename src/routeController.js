@@ -3,6 +3,7 @@ const V1 = {
         require("./v1/app/router/auth"),
         require("./v1/app/router/violationEvent"),
         require("./v1/app/router/healthProfiling"),
+        require("./v1/app/router/app.reportRoadAccident"),
     ],
     ADMIN_ROUTE: [
         require("./v1/Admin/router/admin.lookup"),

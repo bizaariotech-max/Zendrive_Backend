@@ -79,6 +79,7 @@ router.post("/fetchViolationEvents", async (req, res) => {
     try {
         // const token = req.headers["auth-token"]?.split(" ")[1];
         const { filter, page = 1 } = req.body;
+        console.log("body", req.body);
 
         const defaultFilter = {
             dayWise: "",
@@ -90,7 +91,7 @@ router.post("/fetchViolationEvents", async (req, res) => {
 
         const appliedFilter = { ...defaultFilter, ...filter };
 
-        console.log("filter:", appliedFilter);
+        // console.log("filter:", appliedFilter);
 
         // const userId = __getUserIdFromToken(token);
 
