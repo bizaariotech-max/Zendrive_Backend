@@ -9,6 +9,7 @@ const { __SUCCESS } = require("../../../utils/variable");
 
 // models
 const LookupMaster = require("../../../models/lookupmodel");
+const StationMaster = require("../../../models/StationMaster");
 
 router.post("/LookupList", async (req, res) => {
     try {
@@ -18,23 +19,25 @@ router.post("/LookupList", async (req, res) => {
             );
         }
 
-        // For user_master_list lookup
-        if (req?.body?.lookup_type[0] === "user_master_list") {
-            // const users = await UserMaster.find();
-            // if (users.length === 0) {
-            //     return res.json(__requestResponse("404", "No Data found"));
-            // }
-            // return res.json(
-            //     __requestResponse(
-            //         "200",
-            //         __SUCCESS,
-            //         users.map((item) => ({
-            //             // lookup_value: item?.FirstName + " " + item?.LastName,
-            //             lookup_value: item?.FullName,
-            //             _id: item._id,
-            //         }))
-            //     )
-            // );
+        // For station lookup
+        if (req?.body?.lookup_type[0] === "station") {
+            const station = await StationMaster.find(
+                { IsActive: true },
+                "StationName"
+            );
+            if (station.length === 0) {
+                return res.json(__requestResponse("404", "No Data found"));
+            }
+            return res.json(
+                __requestResponse(
+                    "200",
+                    __SUCCESS,
+                    station.map((item) => ({
+                        lookup_value: item?.StationName,
+                        _id: item._id,
+                    }))
+                )
+            );
         }
 
         // For other lookup types
