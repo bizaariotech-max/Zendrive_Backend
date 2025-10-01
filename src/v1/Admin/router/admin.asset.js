@@ -21,6 +21,20 @@ router.post("/AddEditAsset", async (req, res) => {
         };
 
         if (!AssetId) {
+            if (req.body?.Vehicle?.RegistrationNumber) {
+                const check = await AssetMaster.findOne({
+                    "Vehicle.RegistrationNumber":
+                        req.body?.Vehicle?.RegistrationNumber,
+                });
+                if (check) {
+                    return res.json(
+                        __requestResponse(
+                            "400",
+                            "Vehical With This Registration Number Already Exist"
+                        )
+                    );
+                }
+            }
             await AssetMaster.create(newData);
             return res.json(__requestResponse("200", __SUCCESS));
         }
@@ -65,6 +79,7 @@ router.post("/GetAssets", async (req, res) => {
                 { path: "Individual.ReportingTo" },
                 { path: "Individual.DepartmentId", select: "lookup_value" },
                 { path: "Individual.DesignationId", select: "lookup_value" },
+                { path: "Vehicle.VehicalTypeId", select: "lookup_value" },
                 { path: "Vehicle.MakeId", select: "lookup_value" },
                 { path: "Vehicle.VehicleModelId", select: "lookup_value" },
                 { path: "Vehicle.FuelTypeId", select: "lookup_value" },

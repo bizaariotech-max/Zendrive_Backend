@@ -50,7 +50,7 @@ const _SchemaDesign = new mongoose.Schema(
         Vehicle: {
             RegistrationNumber: String,
             RegistrationAuthority: String, // RTO Office Name
-            VehicalType: {
+            VehicalTypeId: {
                 type: mongoose.SchemaTypes.ObjectId,
                 ref: "admin_lookups", //vehical_type lookup
             },

@@ -117,6 +117,7 @@ router.post("/GetAssets", async (req, res) => {
                 { path: "Individual.DepartmentId", select: "lookup_value" },
                 { path: "Individual.DesignationId", select: "lookup_value" },
                 { path: "Vehicle.MakeId", select: "lookup_value" },
+                { path: "Vehicle.VehicalTypeId", select: "lookup_value" },
                 { path: "Vehicle.VehicleModelId", select: "lookup_value" },
                 { path: "Vehicle.FuelTypeId", select: "lookup_value" },
                 { path: "Vehicle.ColorId", select: "lookup_value" },
