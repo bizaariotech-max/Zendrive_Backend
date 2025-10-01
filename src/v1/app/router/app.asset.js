@@ -1,10 +1,11 @@
 const express = require("express");
 const { default: mongoose } = require("mongoose");
 const router = express.Router();
-const { __requestResponse } = require("../../../utils/constent");
+const { __requestResponse, __deepClone } = require("../../../utils/constent");
 const { __SUCCESS, __SOME_ERROR } = require("../../../utils/variable");
 const AssetMaster = require("../../../models/AssetMaster");
 const { GetLookup, GetENV } = require("../../app/constant");
+const DutyAllocation = require("../../../models/DutyAllocation");
 
 // Add / Edit Asset
 router.post("/AddEditAsset", async (req, res) => {
@@ -49,12 +50,42 @@ router.post("/GetAssets", async (req, res) => {
                 ? "68cb9812d425cf3422d58d1c"
                 : "68cb9812d425cf3422d58d1d"
         );
+
+        const vehicleIds = new Array();
+        if (assetType == "Vehicle") {
+            // req.body.DriverId;
+            if (!req.body?.DriverId) {
+                return res.json(
+                    __requestResponse("400", "Please Provide Driver Id")
+                );
+            }
+
+            const checklist = await DutyAllocation.find({
+                DriverId: req.body?.DriverId || null,
+            });
+
+            if (checklist.length == 0) {
+                return res.json(
+                    __requestResponse(
+                        "400",
+                        "No Vehical Allocated to this Driver"
+                    )
+                );
+            }
+            __deepClone(checklist).map((item) =>
+                vehicleIds.push(item.VehicleId)
+            );
+        }
+
         const list = await AssetMaster.find(
             assetType
                 ? {
                       AssetTypeId: {
                           $in: AssetTypeIds.map((item) => item?._id),
                       },
+                      ...(assetType == "Vehicle" && {
+                          _id: { $in: vehicleIds },
+                      }),
                   }
                 : {}
         )
