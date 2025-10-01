@@ -5,6 +5,7 @@ const { __requestResponse } = require("../../../utils/constent");
 const { __SUCCESS } = require("../../../utils/variable");
 const StationMaster = require("../../../models/StationMaster");
 const { GetENV } = require("../constant");
+const ServiceBookingRegister = require("../../../models/ServiceBookingRegister");
 
 router.post("/AddServiceBookingReq", async (req, res) => {
     try {
@@ -32,7 +33,7 @@ router.post("/AddServiceBookingReq", async (req, res) => {
             Acknowledged: req.body?.Acknowledged || false,
             Status: req.body?.Status,
         };
-        await StationMaster.create(newData);
+        await ServiceBookingRegister.create(newData);
         return res.json(__requestResponse("200", __SUCCESS));
     } catch (error) {
         console.log(error);
