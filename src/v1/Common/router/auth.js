@@ -45,6 +45,58 @@ router.post("/Login", async (req, res) => {
                     },
                 })
             );
+        } else if (LoginFrom == "Driver") {
+            //
+            const checklist = await GetENV("DRIVER_LOGIN");
+
+            const user = await LoginMaster.findOne({
+                RoleId: checklist?.EnvSettingValue,
+                PhoneNumber: PhoneNumber,
+            }).populate([
+                { path: "RoleId", select: "lookup_value" },
+                { path: "AssetId" },
+                { path: "StationId", select: "StationName" },
+            ]);
+
+            if (!user) {
+                return res.json(__requestResponse("400", "Login Not Found"));
+            }
+            if (user.Password != Password) {
+                return res.json(__requestResponse("401", "Invalid Password"));
+            }
+
+            const AssetDetails = {
+                AssetID: user?.AssetId?._id,
+                StationId: user?.StationId,
+                AssetTypeId: user?.AssetId?.AssetTypeId,
+                FirstName: user?.AssetId?.Individual?.FirstName?.trim(),
+                LastName: user?.AssetId?.Individual?.LastName?.trim(),
+                DLNumber: user?.AssetId?.Individual?.DLNumber,
+                EmailAddress: user?.AssetId?.Individual?.EmailAddress,
+                LoginId: user?._id,
+                CreatedAt: user?.AssetId?.createdAt,
+            };
+            const token = __generateAuthToken({
+                _id: user?.AssetId?._id,
+                AdminData: AssetDetails,
+            });
+
+            return res.json(
+                __requestResponse("200", __SUCCESS, {
+                    AuthToken: token,
+                    LoginDetails: {
+                        LoginId: user?._id,
+                        PhoneNumber: user?.PhoneNumber,
+                        Name: [
+                            user?.AssetId?.Individual?.FirstName?.trim(),
+                            user?.AssetId?.Individual?.LastName?.trim(),
+                        ].join(" "),
+                        Role: user?.RoleId?.lookup_value,
+                        RoleId: user?.RoleId?._id,
+                    },
+                    AssetDetails: AssetDetails,
+                })
+            );
         } else {
             return res.json(__requestResponse("400", __NOT_AUTHORIZE));
         }
