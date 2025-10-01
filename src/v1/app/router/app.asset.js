@@ -10,7 +10,7 @@ const DutyAllocation = require("../../../models/DutyAllocation");
 // Add / Edit Asset
 router.post("/AddEditAsset", async (req, res) => {
     try {
-        const { AssetId } = req.body;
+        const { AssetId, DriverId = null } = req.body;
 
         const newData = {
             AssetTypeId: req.body?.AssetTypeId,
@@ -21,7 +21,28 @@ router.post("/AddEditAsset", async (req, res) => {
         };
 
         if (!AssetId) {
-            await AssetMaster.create(newData);
+            if (DriverId) {
+                const check = await AssetMaster.findOne({
+                    "Vehicle.RegistrationNumber":
+                        req.body?.Vehicle?.RegistrationNumber,
+                });
+                if (check) {
+                    return res.json(
+                        __requestResponse(
+                            "400",
+                            "Vehical With This Registration Number Already Exist"
+                        )
+                    );
+                }
+            }
+            const asset = await AssetMaster.create(newData);
+
+            if (DriverId) {
+                await DutyAllocation.create({
+                    VehicleId: asset?._id,
+                    DriverId: DriverId,
+                });
+            }
             return res.json(__requestResponse("200", __SUCCESS));
         }
 
