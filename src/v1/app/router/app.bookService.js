@@ -119,9 +119,9 @@ router.post("/UpdateServiceStatus", async (req, res) => {
             );
         }
 
-        const ServiceStatus = await GetENV(ServiceStatus);
+        const Service = await GetENV(req.body.ServiceStatus);
         const newData = {
-            Status: ServiceStatus?.EnvSettingValue,
+            Status: Service?.EnvSettingValue,
         };
         await ServiceBookingRegister.findByIdAndUpdate(
             req.body.ServiceId,
