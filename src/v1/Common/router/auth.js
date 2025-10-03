@@ -45,12 +45,20 @@ router.post("/Login", async (req, res) => {
                     },
                 })
             );
-        } else if (LoginFrom == "Driver") {
-            //
-            const checklist = await GetENV("DRIVER_LOGIN");
+        } else if (["Driver", "HealthAccessor"].includes(LoginFrom)) {
+            const checklist =
+                LoginFrom == "Driver"
+                    ? await GetENV("DRIVER_LOGIN", "multi")
+                    : LoginFrom == "HealthAccessor"
+                    ? await GetENV("HEALTH_ACCESSOR_LOGIN", "multi")
+                    : [];
+
+            if (checklist.length == 0) {
+                return res.json(__requestResponse("400", "Role Not Found"));
+            }
 
             const user = await LoginMaster.findOne({
-                RoleId: checklist?.EnvSettingValue,
+                RoleId: { $in: checklist.map((ids) => ids.EnvSettingValue) },
                 PhoneNumber: PhoneNumber,
             }).populate([
                 { path: "RoleId", select: "lookup_value" },
