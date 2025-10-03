@@ -124,7 +124,7 @@ router.post("/UpdateServiceStatus", async (req, res) => {
             Status: ServiceStatus?.EnvSettingValue,
         };
         await ServiceBookingRegister.findByIdAndUpdate(
-            ServiceId,
+            req.body.ServiceId,
             {
                 $set: newData,
             },
