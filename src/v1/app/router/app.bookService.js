@@ -1,11 +1,12 @@
 const express = require("express");
 const { default: mongoose } = require("mongoose");
 const router = express.Router();
-const { __requestResponse } = require("../../../utils/constent");
+const { __requestResponse, __deepClone } = require("../../../utils/constent");
 const { __SUCCESS } = require("../../../utils/variable");
 const StationMaster = require("../../../models/StationMaster");
 const { GetENV } = require("../constant");
 const ServiceBookingRegister = require("../../../models/ServiceBookingRegister");
+const DutyAllocation = require("../../../models/DutyAllocation");
 
 router.post("/AddServiceBookingReq", async (req, res) => {
     try {
@@ -17,6 +18,7 @@ router.post("/AddServiceBookingReq", async (req, res) => {
         }
 
         const ServiceType = await GetENV(req.body.ServiceType);
+        const ServiceStatus = await GetENV("SERVICE_PENDING");
         const newData = {
             ServiceTypeId: ServiceType?.EnvSettingValue,
             AssetId: req.body?.AssetId || null,
@@ -31,7 +33,7 @@ router.post("/AddServiceBookingReq", async (req, res) => {
             CityId: req.body?.CityId,
             PostalCode: req.body?.PostalCode,
             Acknowledged: req.body?.Acknowledged || false,
-            Status: req.body?.Status,
+            Status: ServiceStatus?.EnvSettingValue,
         };
         await ServiceBookingRegister.create(newData);
         return res.json(__requestResponse("200", __SUCCESS));
@@ -42,16 +44,20 @@ router.post("/AddServiceBookingReq", async (req, res) => {
 });
 router.post("/GetServiceBookingReq", async (req, res) => {
     try {
-        // env  - VEHICLE_INSPECTION , VEHICLE_SERVICE
+        // env  - VEHICLE_INSPECTION , VEHICLE_SERVICE , HEALTH_AUDIT
         if (!req.body.ServiceType) {
             return res.json(
                 __requestResponse("400", "Please Select Service Type")
             );
         }
 
+        const ServiceStatus = await GetENV(
+            req.body.Status || "SERVICE_PENDING"
+        );
         const ServiceType = await GetENV(req.body.ServiceType);
         const newData = {
             ServiceTypeId: ServiceType?.EnvSettingValue,
+            Status: ServiceStatus?.EnvSettingValue,
         };
         const list = await ServiceBookingRegister.find(newData).populate([
             {
@@ -60,12 +66,73 @@ router.post("/GetServiceBookingReq", async (req, res) => {
             },
             {
                 path: "AssetId",
+                select: "StationId Vehicle.RegistrationNumber",
+                populate: {
+                    path: "StationId",
+                    select: "StationName",
+                },
             },
         ]);
         if (list.length == 0) {
             return res.json(__requestResponse("400", "List not found"));
         }
-        return res.json(__requestResponse("200", __SUCCESS, list));
+
+        const dutyAllocationList = await DutyAllocation.find({
+            VehicleId: { $in: list.map((i) => i?.AssetId?._id) },
+        }).populate(
+            "DriverId",
+            "Individual.FirstName Individual.LastName Individual.DLNumber"
+        );
+
+        return res.json(
+            __requestResponse(
+                "200",
+                __SUCCESS,
+                __deepClone(list).map((item) => {
+                    const DriverDetails = __deepClone(dutyAllocationList).find(
+                        (duty) =>
+                            duty?.VehicleId?.toString() ===
+                            item?.AssetId?._id?.toString()
+                    )?.DriverId;
+                    return {
+                        ...item,
+                        DriverDetails: {
+                            _id: DriverDetails?._id,
+                            ...DriverDetails?.Individual,
+                        },
+                    };
+                })
+            )
+        );
+    } catch (error) {
+        console.log(error);
+        return res.json(__requestResponse("500", error.message));
+    }
+});
+
+router.post("/UpdateServiceStatus", async (req, res) => {
+    try {
+        // env  - SERVICE_PENDING
+        if (!req.body.ServiceStatus) {
+            return res.json(
+                __requestResponse("400", "Please Select Service Status")
+            );
+        }
+
+        const ServiceStatus = await GetENV(ServiceStatus);
+        const newData = {
+            Status: ServiceStatus?.EnvSettingValue,
+        };
+        await ServiceBookingRegister.findByIdAndUpdate(
+            ServiceId,
+            {
+                $set: newData,
+            },
+            {
+                new: true,
+            }
+        );
+        return res.json(__requestResponse("200", __SUCCESS));
     } catch (error) {
         console.log(error);
         return res.json(__requestResponse("500", error.message));
