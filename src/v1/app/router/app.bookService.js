@@ -113,6 +113,9 @@ router.post("/GetServiceBookingReq", async (req, res) => {
 router.post("/UpdateServiceStatus", async (req, res) => {
     try {
         // env  - SERVICE_PENDING
+        if (!req.body.ServiceId) {
+            return res.json(__requestResponse("400", "Service Id Not Found"));
+        }
         if (!req.body.ServiceStatus) {
             return res.json(
                 __requestResponse("400", "Please Select Service Status")
@@ -122,6 +125,30 @@ router.post("/UpdateServiceStatus", async (req, res) => {
         const Service = await GetENV(req.body.ServiceStatus);
         const newData = {
             Status: Service?.EnvSettingValue,
+        };
+        await ServiceBookingRegister.findByIdAndUpdate(
+            req.body.ServiceId,
+            {
+                $set: newData,
+            },
+            {
+                new: true,
+            }
+        );
+        return res.json(__requestResponse("200", __SUCCESS));
+    } catch (error) {
+        console.log(error);
+        return res.json(__requestResponse("500", error.message));
+    }
+});
+router.post("/UpdateService", async (req, res) => {
+    try {
+        if (!req.body.ServiceId) {
+            return res.json(__requestResponse("400", "Service Id Not Found"));
+        }
+
+        const newData = {
+            ...req.body,
         };
         await ServiceBookingRegister.findByIdAndUpdate(
             req.body.ServiceId,
