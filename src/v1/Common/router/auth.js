@@ -4,11 +4,7 @@ const {
     __requestResponse,
     __generateAuthToken,
 } = require("../../../utils/constent");
-const {
-    __SUCCESS,
-    __SOME_ERROR,
-    __NOT_AUTHORIZE,
-} = require("../../../utils/variable");
+const { __SUCCESS, __NOT_AUTHORIZE } = require("../../../utils/variable");
 const LoginMaster = require("../../../models/LoginMaster");
 const { GetENV } = require("../../app/constant");
 
