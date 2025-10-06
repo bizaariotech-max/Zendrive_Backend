@@ -7,6 +7,7 @@ const V1 = {
         require("./v1/app/router/app.SOS"),
         require("./v1/app/router/app.asset"),
         require("./v1/app/router/app.bookService"),
+        require("./v1/app/router/app.incident"),
     ],
     ADMIN_ROUTE: [
         require("./v1/Admin/router/admin.lookup"),
