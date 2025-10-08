@@ -53,5 +53,23 @@ router.post("/AddVehicleService", async (req, res) => {
         );
     }
 });
+router.post("/GetVehicleService", async (req, res) => {
+    try {
+        const list = await VehicleServiceRegistration.find().populate([
+            {
+                path: "DriverId",
+                select: "Individual.FirstName Individual.LastName Individual.DLNumber",
+            },
+            { path: "VehicleId", select: "Vehicle.RegistrationNumber" },
+        ]);
+
+        return res.json(__requestResponse("200", __SUCCESS, list));
+    } catch (error) {
+        console.error("AddEditVehicleEvent Error:", error);
+        return res.json(
+            __requestResponse("500", error.message || __SOME_ERROR)
+        );
+    }
+});
 
 module.exports = router;
