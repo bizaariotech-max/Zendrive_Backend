@@ -36,7 +36,7 @@ const GetLookup = async (lookup_type, parent_lookup_id) => {
 };
 function GroupQuestionsByLogicalGroup(data) {
     return data.reduce((acc, item) => {
-        const group = item.LogicalGroup.lookup_value;
+        const group = item?.LogicalGroup?.lookup_value;
         if (!acc[group]) {
             acc[group] = [];
         }
@@ -44,6 +44,20 @@ function GroupQuestionsByLogicalGroup(data) {
             QuestionId: item._id,
             HPQuestion: item.HPQuestion,
             LogicalGroupId: item.LogicalGroup?._id,
+        });
+        return acc;
+    }, {});
+}
+function GroupQuestionsByHpGroup(data) {
+    return data.reduce((acc, item) => {
+        const group = item?.HPGroup?.lookup_value;
+        if (!acc[group]) {
+            acc[group] = [];
+        }
+        acc[group].push({
+            QuestionId: item._id,
+            HPQuestion: item.HPQuestion,
+            HPGroupId: item.HPGroup?._id,
         });
         return acc;
     }, {});
@@ -65,4 +79,5 @@ module.exports = {
     GetLookup,
     GroupQuestionsByLogicalGroup,
     GroupAnswersByCreatedAt,
+    GroupQuestionsByHpGroup,
 };

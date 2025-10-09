@@ -9,6 +9,7 @@ const {
     GetENV,
     GroupQuestionsByLogicalGroup,
     GroupAnswersByCreatedAt,
+    GroupQuestionsByHpGroup,
 } = require("../constant");
 
 router.post("/GetHpQuestion", async (req, res) => {
@@ -109,6 +110,61 @@ router.post("/GetHpQuestionAnswer", async (req, res) => {
                 HeaderKeys: keysArray,
                 Questions: groupQuestion,
                 Answers: newAnswers,
+            })
+        );
+    } catch (error) {
+        console.log(error.message);
+        return res.json(__requestResponse("500", __SOME_ERROR));
+    }
+});
+router.post("/GetHealthProfileQuestionAnswer", async (req, res) => {
+    try {
+        const list = await HPQuestionMaster.find(
+            {
+                HPGroup: {
+                    $in: [
+                        "68c3c8aeec258ce81beb8192",
+                        "68c3c8baec258ce81beb819d",
+                        "68e78961771e398415e36191",
+                        "68e78978771e398415e3619d",
+                        "68d1011468c338f792f3d8b3",
+                        "68d100f468c338f792f3d88f",
+                        "68e7899b771e398415e361a9",
+                        "68e7899b771e398415e361a9",
+                        "68e789c8771e398415e361b6",
+                        "68e789d8771e398415e361c2",
+                        "68e789e8771e398415e361ce",
+                        "68e789f7771e398415e361da",
+                    ],
+                },
+            },
+            "HPGroup HPQuestion"
+        ).populate({
+            path: "HPGroup",
+            select: "lookup_value",
+        });
+        const groupQuestion = await GroupQuestionsByHpGroup(list);
+
+        const answers = await HPUserResponse.find(
+            {
+                HPQuestion: { $in: list.map((ids) => ids?._id) },
+            },
+            "-GeoLocation -AbnormalitiesFound -AssetId"
+        ).populate([
+            {
+                path: "HPQuestion",
+                select: "HPGroup HPQuestion",
+                populate: {
+                    path: "HPGroup",
+                    select: "lookup_value",
+                },
+            },
+        ]);
+
+        return res.json(
+            __requestResponse("200", __SUCCESS, {
+                Questions: groupQuestion,
+                Answers: answers,
             })
         );
     } catch (error) {
