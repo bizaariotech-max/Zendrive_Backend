@@ -225,7 +225,7 @@ router.post("/UpdateHpQuestionAnswer", async (req, res) => {
                 );
             }
 
-            return res.json(__requestResponse("400", __SUCCESS));
+            return res.json(__requestResponse("200", __SUCCESS));
         }
 
         return res.json(__requestResponse("400", "Bad Request"));
