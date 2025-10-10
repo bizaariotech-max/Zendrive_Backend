@@ -195,4 +195,44 @@ router.post("/GetHealthProfileQuestionAnswer", async (req, res) => {
     }
 });
 
+router.post("/UpdateHpQuestionAnswer", async (req, res) => {
+    try {
+        console.log(JSON.stringify(req.body));
+
+        // const newList = req.body.Questions?.map((item) => ({
+        //     AssetId: null,
+        //     HPQuestion: item?.Question_ID,
+        //     UserResponse: item?.Answers,
+        //     DateAndTime: new Date(),
+        //     GeoLocation: {
+        //         type: "Point",
+        //         coordinates: [0, 0],
+        //     },
+        // }));
+        // await HPUserResponse.create(newList);
+
+        if (req.body.Questions && req.body.Questions.length != 0) {
+            for (let index = 0; index < req.body.Questions.length; index++) {
+                const element = req.body.Questions[index];
+                await HPUserResponse.findByIdAndUpdate(
+                    element?.AnswerId,
+                    {
+                        $set: {
+                            UserResponse: element?.Answers,
+                        },
+                    },
+                    { new: true }
+                );
+            }
+
+            return res.json(__requestResponse("400", __SUCCESS));
+        }
+
+        return res.json(__requestResponse("400", "Bad Request"));
+    } catch (error) {
+        console.log(error.message);
+        return res.json(__requestResponse("500", __SOME_ERROR));
+    }
+});
+
 module.exports = router;
