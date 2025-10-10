@@ -117,6 +117,28 @@ router.post("/GetHpQuestionAnswer", async (req, res) => {
         return res.json(__requestResponse("500", __SOME_ERROR));
     }
 });
+
+router.post("/GetHealthProfileQuestion", async (req, res) => {
+    try {
+        const HPGroup = req.body.HpGroupId;
+        if (!HPGroup) {
+            return res.json(
+                __requestResponse("400", "Please Select Asset Type")
+            );
+        }
+
+        const list = await HPQuestionMaster.find({
+            HPGroup: HPGroup,
+        }).populate({
+            path: "AssetType HPGroup InvestigationType QuestionType InputType LogicalGroup",
+            select: "lookup_value",
+        });
+        return res.json(__requestResponse("200", __SUCCESS, list));
+    } catch (error) {
+        console.log(error.message);
+        return res.json(__requestResponse("500", __SOME_ERROR));
+    }
+});
 router.post("/GetHealthProfileQuestionAnswer", async (req, res) => {
     try {
         const list = await HPQuestionMaster.find(
@@ -153,9 +175,9 @@ router.post("/GetHealthProfileQuestionAnswer", async (req, res) => {
         ).populate([
             {
                 path: "HPQuestion",
-                select: "HPGroup HPQuestion",
+                // select: "HPGroup HPQuestion",
                 populate: {
-                    path: "HPGroup",
+                    path: "AssetType HPGroup InvestigationType QuestionType InputType",
                     select: "lookup_value",
                 },
             },
