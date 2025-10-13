@@ -15,7 +15,8 @@ const Symptom_Question_Options = require("../../../models/Symptom_Question_Optio
 const SymptomMapping = require("../../../models/SymptomMapping");
 const LookupModel = require("../../../models/lookupmodel");
 
-router.post("/GeneralQuestion", __fetchToken, async (req, res) => {
+// router.post("/GeneralQuestion", __fetchToken, async (req, res) => {
+router.post("/GeneralQuestion", async (req, res) => {
     try {
         const { Symptoms = [] } = req.body;
 
