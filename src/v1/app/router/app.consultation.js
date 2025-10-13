@@ -109,4 +109,112 @@ router.post("/GeneralQuestion", async (req, res) => {
     }
 });
 
+router.post("/GetDiseaseSymptomsList", __fetchToken, async (req, res) => {
+    try {
+        const { DiseaseIds = [] } = req.body;
+
+        const diseases = await LookupModel.find(
+            {
+                _id: {
+                    $in: DiseaseIds.filter((_ids) =>
+                        mongoose.Types.ObjectId.isValid(_ids)
+                    ),
+                },
+                lookup_type: "disease",
+            },
+            "lookup_value parent_lookup_id"
+        );
+
+        const symptoms = await LookupModel.find(
+            {
+                lookup_type: "symptom",
+                parent_lookup_id: {
+                    $in: DiseaseIds.filter((_ids) =>
+                        mongoose.Types.ObjectId.isValid(_ids)
+                    ),
+                },
+            },
+            "lookup_value parent_lookup_id"
+        );
+
+        const testReportList = await LookupModel.find(
+            { lookup_type: "test_report", is_active: true },
+            "lookup_value"
+        );
+
+        return res.json(
+            __requestResponse("200", __SUCCESS, {
+                DiseaseTestReportList: __deepClone(testReportList).map(
+                    (item) => ({
+                        id: item?._id,
+                        name: item?.lookup_value,
+                    })
+                ),
+                DiseaseList: __deepClone(diseases).map((item) => ({
+                    id: item?._id,
+                    name: item?.lookup_value,
+                    symptoms: __deepClone(symptoms)
+                        .filter((sym) => sym?.parent_lookup_id == item?._id)
+                        .map((sym) => ({
+                            ...sym,
+                            id: sym?._id,
+                            name: sym?.lookup_value,
+                        })),
+                })),
+            })
+        );
+    } catch (error) {
+        console.log(error);
+        return res.json(__requestResponse("500", __SOME_ERROR, error));
+    }
+});
+
+router.post("/GetSurgerySymptomsList", __fetchToken, async (req, res) => {
+    try {
+        const { SurgeryIds = [] } = req.body;
+
+        const surgeries = await LookupModel.find(
+            {
+                _id: {
+                    $in: SurgeryIds.filter((_ids) =>
+                        mongoose.Types.ObjectId.isValid(_ids)
+                    ),
+                },
+                lookup_type: "surgeries",
+            },
+            "lookup_value parent_lookup_id"
+        );
+
+        const symptoms = await LookupModel.find(
+            {
+                lookup_type: "symptom",
+                parent_lookup_id: {
+                    $in: SurgeryIds.filter((_ids) =>
+                        mongoose.Types.ObjectId.isValid(_ids)
+                    ),
+                },
+            },
+            "lookup_value parent_lookup_id"
+        );
+
+        return res.json(
+            __requestResponse("200", __SUCCESS, {
+                SurgeryList: __deepClone(surgeries).map((item) => ({
+                    id: item?._id,
+                    name: item?.lookup_value,
+                    symptoms: __deepClone(symptoms)
+                        .filter((sym) => sym?.parent_lookup_id == item?._id)
+                        .map((sym) => ({
+                            ...sym,
+                            id: sym?._id,
+                            name: sym?.lookup_value,
+                        })),
+                })),
+            })
+        );
+    } catch (error) {
+        console.log(error);
+        return res.json(__requestResponse("500", __SOME_ERROR, error));
+    }
+});
 module.exports = router;
