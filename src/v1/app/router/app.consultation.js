@@ -109,7 +109,8 @@ router.post("/GeneralQuestion", async (req, res) => {
     }
 });
 
-router.post("/GetDiseaseSymptomsList", __fetchToken, async (req, res) => {
+// router.post("/GetDiseaseSymptomsList", __fetchToken, async (req, res) => {
+router.post("/GetDiseaseSymptomsList", async (req, res) => {
     try {
         const { DiseaseIds = [] } = req.body;
 
@@ -169,7 +170,8 @@ router.post("/GetDiseaseSymptomsList", __fetchToken, async (req, res) => {
     }
 });
 
-router.post("/GetSurgerySymptomsList", __fetchToken, async (req, res) => {
+// router.post("/GetSurgerySymptomsList", __fetchToken, async (req, res) => {
+router.post("/GetSurgerySymptomsList", async (req, res) => {
     try {
         const { SurgeryIds = [] } = req.body;
 
