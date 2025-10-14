@@ -14,6 +14,7 @@ const SymptomQuestions = require("../../../models/SymptomQuestions");
 const Symptom_Question_Options = require("../../../models/Symptom_Question_Options");
 const SymptomMapping = require("../../../models/SymptomMapping");
 const LookupModel = require("../../../models/lookupmodel");
+const SpecialtyMappings = require("../../../models/SpecialtyMappings");
 
 // router.post("/GeneralQuestion", __fetchToken, async (req, res) => {
 router.post("/GeneralQuestion", async (req, res) => {
@@ -214,6 +215,23 @@ router.post("/GetSurgerySymptomsList", async (req, res) => {
                 })),
             })
         );
+    } catch (error) {
+        console.log(error);
+        return res.json(__requestResponse("500", __SOME_ERROR, error));
+    }
+});
+
+// router.post("/SpecialistSpeciality", __fetchToken, async (req, res) => {
+router.post("/SpecialistSpeciality", async (req, res) => {
+    try {
+        const AllSpecialty = await SpecialtyMappings.find(
+            {
+                // IsActive: true,
+            }
+            // "-IsActive"
+        );
+
+        return res.json(__requestResponse("200", __SUCCESS, AllSpecialty));
     } catch (error) {
         console.log(error);
         return res.json(__requestResponse("500", __SOME_ERROR, error));
