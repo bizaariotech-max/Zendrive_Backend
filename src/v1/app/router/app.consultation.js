@@ -333,4 +333,78 @@ router.post("/GetSpecialityDAList", async (req, res) => {
         return res.json(__requestResponse("500", __SOME_ERROR, error));
     }
 });
+
+// router.post("/GetSpecialityDetails", __fetchToken, async (req, res) => {
+router.post("/GetSpecialityDetails", async (req, res) => {
+    try {
+        const { Speciality } = req.body;
+
+        const _specialityID = mongoose.Types.ObjectId.isValid(Speciality)
+            ? mongoose.Types.ObjectId(Speciality)
+            : null;
+
+        if (!_specialityID) {
+            return res.json(
+                __requestResponse("400", "Invalid Speciality ID or Not Found")
+            );
+        }
+
+        const SpecialtyMappingDetails = await SpecialtyMappings.findById(
+            _specialityID,
+            "-IsActive"
+        );
+
+        if (!SpecialtyMappingDetails) {
+            return res.json(
+                __requestResponse("400", "Invalid Speciality ID or Not Found")
+            );
+        }
+
+        const diseases = await LookupModel.find(
+            {
+                lookup_type: "disease",
+                parent_lookup_id: {
+                    $in: SpecialtyMappingDetails?.SpecialtyId.filter((_ids) =>
+                        mongoose.Types.ObjectId.isValid(_ids)
+                    ),
+                },
+            },
+            "lookup_value parent_lookup_id"
+        );
+        const abnormalfinding = await LookupModel.find(
+            {
+                lookup_type: "abnormal_finding",
+                parent_lookup_id: {
+                    $in: SpecialtyMappingDetails?.SpecialtyId.filter((_ids) =>
+                        mongoose.Types.ObjectId.isValid(_ids)
+                    ),
+                },
+            },
+            "lookup_value parent_lookup_id"
+        );
+
+        return res.json(
+            __requestResponse("200", __SUCCESS, {
+                SpecialityDetails: {
+                    id: SpecialtyMappingDetails?._id,
+                    name: SpecialtyMappingDetails?.GroupCategory,
+                },
+                DiseaseList: __deepClone(diseases).map((item) => ({
+                    id: item?._id,
+                    name: item?.lookup_value,
+                    speciality: item?.parent_lookup_id,
+                })),
+                AbnormalList: __deepClone(abnormalfinding).map((item) => ({
+                    id: item?._id,
+                    name: item?.lookup_value,
+                    speciality: item?.parent_lookup_id,
+                })),
+            })
+        );
+    } catch (error) {
+        console.log(error);
+        return res.json(__requestResponse("500", __SOME_ERROR, error));
+    }
+});
+
 module.exports = router;
