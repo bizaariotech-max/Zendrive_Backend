@@ -237,4 +237,100 @@ router.post("/SpecialistSpeciality", async (req, res) => {
         return res.json(__requestResponse("500", __SOME_ERROR, error));
     }
 });
+
+// router.post("/GetSpecialityDAList", __fetchToken, async (req, res) => {
+router.post("/GetSpecialityDAList", async (req, res) => {
+    try {
+        const { DiseaseIds = [], AbnormalIds = [] } = req.body;
+
+        const diseases = await LookupModel.find(
+            {
+                _id: {
+                    $in: DiseaseIds.filter((_ids) =>
+                        mongoose.Types.ObjectId.isValid(_ids)
+                    ),
+                },
+                lookup_type: "disease",
+            },
+            "lookup_value parent_lookup_id"
+        );
+
+        const abnormalfinding = await LookupModel.find(
+            {
+                lookup_type: "abnormal_finding",
+                _id: {
+                    $in: AbnormalIds.filter((_ids) =>
+                        mongoose.Types.ObjectId.isValid(_ids)
+                    ),
+                },
+            },
+            "lookup_value parent_lookup_id"
+        );
+
+        const symptoms = await LookupModel.find(
+            {
+                lookup_type: "symptom",
+                parent_lookup_id: {
+                    $in: DiseaseIds.filter((_ids) =>
+                        mongoose.Types.ObjectId.isValid(_ids)
+                    ),
+                },
+            },
+            "lookup_value parent_lookup_id"
+        );
+        const associatedsymptoms = await LookupModel.find(
+            {
+                lookup_type: "associated_symptom",
+                parent_lookup_id: {
+                    $in: AbnormalIds.filter((_ids) =>
+                        mongoose.Types.ObjectId.isValid(_ids)
+                    ),
+                },
+            },
+            "lookup_value parent_lookup_id"
+        );
+
+        const testReportList = await LookupModel.find(
+            { lookup_type: "test_report", is_active: true },
+            "lookup_value"
+        );
+
+        return res.json(
+            __requestResponse("200", __SUCCESS, {
+                DiseaseTestReportList: __deepClone(testReportList).map(
+                    (item) => ({
+                        id: item?._id,
+                        name: item?.lookup_value,
+                    })
+                ),
+                DiseaseList: __deepClone(diseases).map((item) => ({
+                    id: item?._id,
+                    name: item?.lookup_value,
+                    speciality: item?.parent_lookup_id,
+                    symptoms: __deepClone(symptoms)
+                        .filter((sym) => sym?.parent_lookup_id == item?._id)
+                        .map((sym) => ({
+                            ...sym,
+                            id: sym?._id,
+                            name: sym?.lookup_value,
+                        })),
+                })),
+                AbnormalList: __deepClone(abnormalfinding).map((item) => ({
+                    id: item?._id,
+                    name: item?.lookup_value,
+                    speciality: item?.parent_lookup_id,
+                    symptoms: __deepClone(associatedsymptoms)
+                        .filter((sym) => sym?.parent_lookup_id == item?._id)
+                        .map((sym) => ({
+                            id: sym?._id,
+                            name: sym?.lookup_value,
+                        })),
+                })),
+            })
+        );
+    } catch (error) {
+        console.log(error);
+        return res.json(__requestResponse("500", __SOME_ERROR, error));
+    }
+});
 module.exports = router;
