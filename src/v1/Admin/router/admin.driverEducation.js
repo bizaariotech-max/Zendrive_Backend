@@ -55,4 +55,23 @@ router.get("/ListDriverEducation", async (req, res) => {
     }
 });
 
+router.post("/DeleteDriverEducation", async (req, res) => {
+    try {
+        const { DriverEducationId } = req.body;
+        if (!DriverEducationId) {
+            return res.json(
+                __requestResponse("400", "Please send DriverEducationId")
+            );
+        }
+        await DriverEducation.findByIdAndDelete(DriverEducationId);
+
+        return res.json(__requestResponse("200", __SUCCESS));
+    } catch (error) {
+        console.error("AddEditDriverEducation Error:", error);
+        return res.json(
+            __requestResponse("500", error.message || __SOME_ERROR)
+        );
+    }
+});
+
 module.exports = router;
